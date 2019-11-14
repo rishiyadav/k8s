@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gluon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-server
+  namespace: gluon
+spec:
+  selector:
+    matchLabels:
+      run: my-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: my-server
+    spec:
+      containers:
+      - name: my-server
+        image: myrbalaji/httpservice:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  namespace: gluon
+spec:
+  type: NodePort
+  selector:
+    run: my-server
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30003
